@@ -65,8 +65,8 @@ if st.button("Predict Yield"):
     xgb_prediction = xgb_model.predict(input_data)[0]
 
     st.subheader("Prediction Results")
-    st.success(f"Predicted Yield (Random Forest): **{rf_prediction:.2f}** units")
-    st.info(f"Predicted Yield (XGBoost): **{xgb_prediction:.2f}** units")
+    st.success(f"Predicted Yield (Random Forest): **{rf_prediction:.2f}** ton per hectare")
+    st.info(f"Predicted Yield (XGBoost): **{xgb_prediction:.2f}** ton per hectare")
     st.markdown("--- Request data ---")
     st.json(input_data.to_dict(orient='records')[0])
 
