@@ -58,6 +58,7 @@ if st.button("Predict Yield"):
     # Ensure the order of columns matches the training data
     expected_features = ['Temperature', 'Rainfall', 'Humidity', 'Soil_Moisture', 'Nitrogen', 'Phosphorus', 'Potassium']
     input_data = input_data[expected_features]
+    input_data = input_data.astype(float) # Ensure all input features are floats
 
     # Make predictions
     rf_prediction = rf_model.predict(input_data)[0]
