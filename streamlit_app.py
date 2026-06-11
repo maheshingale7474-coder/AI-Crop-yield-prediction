@@ -23,6 +23,12 @@ rf_model, xgb_model = load_models()
 st.title("🌾 Crop Yield Prediction App")
 st.markdown("Enter the environmental parameters to predict crop yield using Random Forest and XGBoost models.")
 
+# --- Crop Selection (for display purposes, models are not crop-specific yet) ---
+crops = ['Maize', 'Wheat', 'Rice', 'Barley', 'Soybean', 'Potato', 'Tomato', 'Cotton']
+selected_crop = st.selectbox("Select a Crop", crops)
+
+st.write(f"You selected: **{selected_crop}**")
+
 # --- Input Features ---
 st.header("Input Crop Parameters")
 
