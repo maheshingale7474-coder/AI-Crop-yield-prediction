@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
+import google.generativeai as genai
 
 st.set_page_config(page_title="Crop Yield Prediction", layout="centered")
 
@@ -18,6 +19,16 @@ def load_models():
         st.stop()
 
 rf_model, xgb_model = load_models()
+
+# --- Configure Gemini API ---
+# Ensure GOOGLE_API_KEY is set in your Streamlit Cloud secrets or environment variables
+if "GOOGLE_API_KEY" not in os.environ:
+    st.warning("GOOGLE_API_KEY not found in environment variables. Chatbot functionality may not work.")
+    # Optionally, you can add a placeholder or disable the chatbot if no key is found
+    gemini_model = None
+else:
+    genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+    gemini_model = genai.GenerativeModel('gemini-1.5-flash')
 
 # --- App Title and Description ---
 st.title("🌾 Crop Yield Prediction App")
@@ -69,4 +80,22 @@ if st.button("Predict Yield"):
     st.info(f"Predicted Yield (XGBoost): **{xgb_prediction:.2f}** units")
     st.markdown("--- Request data ---")
     st.json(input_data.to_dict(orient='records')[0])
+
+# --- Chatbot for Suggestions ---
+st.header("💡 Crop Optimization Suggestions")
+if gemini_model:
+    user_query = st.text_area("Ask for crop optimization suggestions:", "What are some general tips for optimizing potato yield in moderate rainfall?")
+    if st.button("Get Suggestion"):
+        if user_query:
+            with st.spinner("Generating suggestions..."):
+                try:
+                    response = gemini_model.generate_content(user_query)
+                    st.markdown("**Gemini's Suggestion:**")
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Error generating suggestion: {e}")
+        else:
+            st.warning("Please enter a query for suggestions.")
+elif st.button("Get Suggestion"):
+    st.error("Chatbot not available. Please configure your GOOGLE_API_KEY in Streamlit secrets.")
 
